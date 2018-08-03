@@ -106,22 +106,22 @@ function hasGitChanges(path) {
   return execSync('git status --porcelain', { cwd: path }).length
 }
 
-function doCmd(cmd, dryrun) {
+function doCmd(cmd, { dryrun, cwd }) {
   console.log(chalk.gray(cmd))
   if (dryrun === false) {
-    execSync(cmd)
+    return execSync(cmd)
   }
 }
 
-function updateDeps(deps, dryrun) {
+function updateDeps(deps, options) {
   const depInstallStrs = deps.map(d => d + '@latest')
-  doCmd(`npm install --save ${depInstallStrs.join(' ')}`, dryrun)
-  doCmd(`git commit -am 'bump deps'`, dryrun)
+  doCmd(`npm install --save ${depInstallStrs.join(' ')}`, options)
+  doCmd(`git commit -am 'bump deps'`, options)
 }
 
-function publishPackage(r, dryrun) {
-  doCmd('npm version patch && npm publish && git push', dryrun)
-  if (dryrun) {
+function publishPackage(r, options) {
+  doCmd('npm version patch && npm publish && git push', options)
+  if (options.dryrun) {
     r.version = semver.inc(r.version, 'patch')
   } else {
     r.version = getPackageConfig(r.path).version
@@ -140,10 +140,9 @@ sortedRepos.forEach(r => {
       return
     }
 
-    doCmd(`cd ${r.path}`, dryrun)
-    updateDeps(deps, dryrun)
-    publishPackage(r, dryrun)
-    doCmd('cd -', dryrun)
+    console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '))
+    updateDeps(deps, { dryrun, cwd: r.path })
+    publishPackage(r, { dryrun, cwd: r.path })
     console.log('')
   }
 })
