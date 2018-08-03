@@ -18,6 +18,7 @@ const options = yargs
     dryrun: {
       alias: 'D',
       describe: `don't make changes`,
+      default: false,
     },
   }).argv
 
@@ -90,10 +91,6 @@ function sortReposByUpdateOrder(repos) {
   return sorted
 }
 
-function hasGitChanges(path) {
-  return execSync('git status --porcelain', { cwd: path }).length
-}
-
 function getDepsToUpdate(sourceRepo, repos) {
   return Object.keys(sourceRepo.deps)
     .map(dep => repos.find(repo => repo.name === dep))
@@ -103,6 +100,10 @@ function getDepsToUpdate(sourceRepo, repos) {
       return semver.lt(version, depRepo.version)
     })
     .map(depRepo => depRepo.name)
+}
+
+function hasGitChanges(path) {
+  return execSync('git status --porcelain', { cwd: path }).length
 }
 
 function doCmd(cmd, dryrun) {
@@ -115,6 +116,7 @@ function doCmd(cmd, dryrun) {
 function updateDeps(deps, dryrun) {
   const depInstallStrs = deps.map(d => d + '@latest')
   doCmd(`npm install --save ${depInstallStrs.join(' ')}`, dryrun)
+  doCmd(`git commit -am 'bump deps'`, dryrun)
 }
 
 function publishPackage(r, dryrun) {
@@ -131,13 +133,13 @@ const root = getRoot(options.root)
 const repos = getRepos(root)
 const sortedRepos = sortReposByUpdateOrder(repos)
 sortedRepos.forEach(r => {
-  if (hasGitChanges(r.path)) {
-    console.log('Skipping', chalk.yellow(r.dir), '- found uncomitted changes')
-    return
-  }
-
   const deps = getDepsToUpdate(r, repos)
   if (deps.length) {
+    if (hasGitChanges(r.path)) {
+      console.log('Skipping', chalk.yellow(r.dir), '- found uncomitted changes')
+      return
+    }
+
     doCmd(`cd ${r.path}`, dryrun)
     updateDeps(deps, dryrun)
     publishPackage(r, dryrun)
