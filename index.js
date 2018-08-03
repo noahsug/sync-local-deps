@@ -37,8 +37,7 @@ function getRoot(userRoot) {
   return path.isAbsolute(root) ? root : path.join(process.cwd(), root)
 }
 
-syncLocalDeps(
-  Object.assign(options, {
-    root: getRoot(options.root),
-  })
-)
+syncLocalDeps({
+  ...options,
+  root: getRoot(options.root),
+})
