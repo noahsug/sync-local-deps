@@ -18,6 +18,11 @@ const options = yargs
       describe: `don't make changes`,
       default: false,
     },
+    skipPublish: {
+      alias: 'P',
+      describe: 'list of directories to not npm publish',
+      type: 'array',
+    },
   }).argv
 
 function getRoot(userRoot) {

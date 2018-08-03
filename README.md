@@ -13,10 +13,11 @@ npm install
 node <path-to-sync-local-deps> [root] [options]
 
 Options:
-  [root]        directory where repos are located, defaults to cwd()
-  --dryrun, -D  don't make changes
-  --help        Show help                                              [boolean]
-  --version     Show version number                                    [boolean]
+  [root]              directory where repos are located, defaults to cwd()
+  --dryrun, -D        don't make changes
+  --skip-publish, -P  list of directories to not npm publish
+  --help              show help
+  --version           show version number
 
 ```
 

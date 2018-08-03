@@ -4,7 +4,7 @@ const { execSync } = require('child_process')
 
 const getSortedRepos = require('./getSortedRepos')
 
-function syncLocalDeps({ dryrun, root }) {
+function syncLocalDeps({ dryrun, root, skipPublish }) {
   const repos = getSortedRepos(root)
   repos.forEach(r => {
     const deps = getDepsToUpdate(r, repos)
@@ -20,7 +20,10 @@ function syncLocalDeps({ dryrun, root }) {
 
       console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '))
       updateDeps(deps, { dryrun, cwd: r.path })
-      publishPackage(r, { dryrun, cwd: r.path })
+      if (!skipPublish.includes(r.dir)) {
+        publishPackage(r, { dryrun, cwd: r.path })
+      }
+      doCmd('git push', { dryrun, cwd: r.path })
       console.log('')
     }
   })
@@ -55,7 +58,7 @@ function updateDeps(deps, options) {
 }
 
 function publishPackage(r, options) {
-  doCmd('npm version patch && npm publish && git push', options)
+  doCmd('npm version patch && npm publish', options)
   if (options.dryrun) {
     r.version = semver.inc(r.version, 'patch')
   } else {
