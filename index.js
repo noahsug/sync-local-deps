@@ -22,6 +22,7 @@ const options = yargs
       alias: 'P',
       describe: 'list of directories to not npm publish',
       type: 'array',
+      default: [],
     },
   }).argv
 
