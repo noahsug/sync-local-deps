@@ -1,0 +1,22 @@
+{
+  "name": "sync-local-deps",
+  "version": "0.0.0",
+  "description": "Keep local npm projects that depend on each other in sync",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:noahsug/sync-local-deps.git"
+  },
+  "main": "index.js",
+  "keywords": [
+    "bump",
+    "dependencies",
+    "npm"
+  ],
+  "author": "Noah Sugarman <noahsug@gmail.com.com>",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "semver": "^5.5.0",
+    "yargs": "^11.0.0"
+  },
+  "devDependencies": {}
+}
