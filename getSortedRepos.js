@@ -1,7 +1,7 @@
 const fs = require('fs')
 const pathLib = require('path')
 
-const { isDirectory } = require('./utils')
+const { isDirectory, getPackageConfig } = require('./utils')
 
 function getSortedRepos(root) {
   const repos = getRepos(root)
@@ -24,20 +24,6 @@ function getRepos(root) {
       }
     })
     .filter(r => r.name)
-}
-
-function getPackageConfig(path) {
-  const packagePath = pathLib.join(path, 'package.json')
-  if (!fs.existsSync(packagePath)) return false
-
-  let config
-  try {
-    const packageJson = fs.readFileSync(packagePath, 'utf-8')
-    config = JSON.parse(packageJson)
-  } catch (e) {
-    return {}
-  }
-  return config
 }
 
 function getDeps(config) {

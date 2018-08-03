@@ -15,6 +15,7 @@ node <path-to-sync-local-deps> [root] [options]
 Options:
   [root]              directory where repos are located, defaults to cwd()
   --dryrun, -D        don't make changes
+  --skip, -S          list of directories to skip
   --skip-publish, -P  list of directories to not npm publish
   --help              show help
   --version           show version number

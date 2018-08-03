@@ -18,6 +18,12 @@ const options = yargs
       describe: `don't make changes`,
       default: false,
     },
+    skip: {
+      alias: 'S',
+      describe: 'list of directories to skip',
+      type: 'array',
+      default: [],
+    },
     skipPublish: {
       alias: 'P',
       describe: 'list of directories to not npm publish',

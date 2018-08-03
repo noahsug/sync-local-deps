@@ -3,10 +3,13 @@ const semver = require('semver')
 const { execSync } = require('child_process')
 
 const getSortedRepos = require('./getSortedRepos')
+const { getPackageConfig } = require('./utils')
 
-function syncLocalDeps({ dryrun, root, skipPublish }) {
+function syncLocalDeps({ dryrun, root, skip, skipPublish }) {
   const repos = getSortedRepos(root)
   repos.forEach(r => {
+    if (!skip.includes(r.dir)) return
+
     const deps = getDepsToUpdate(r, repos)
     if (deps.length) {
       if (hasGitChanges(r.path)) {
