@@ -20,8 +20,11 @@ Options:
 
 ```
 
-This will  scan the given `root` directory for projects that depend on other projects in the same repo. If a repo has out of date local dependencies, then do the following:
-1. Bump out of date dependencies
-2. Publish a new version as a patch with the commit message 'bump deps'
+sync-local-deps does the following:
+1. scans the given `root` directory for projects that depend on other projects in `root`
+1. build a dependency graph between projects so they're updated in the correct order
+1. for each project with out of date local dependencies, do the following:
+  1. bump out of date local dependencies
+  1. publish a new version as a patch with commit message 'bump deps'
 
-This process will continue until every package has up-to-date local dependencies.
+This process continues until every package has up-to-date local dependencies.
