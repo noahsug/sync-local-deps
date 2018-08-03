@@ -10,7 +10,7 @@ npm install
 
 ## Usage
 ```sh
-node <sync-local-deps> [root] [options]
+node <path-to-sync-local-deps> [root] [options]
 
 Options:
   [root]        directory where repos are located, defaults to cwd()
