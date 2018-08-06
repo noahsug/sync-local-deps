@@ -7,8 +7,11 @@ const { getPackageConfig } = require('./utils')
 
 function syncLocalDeps({ dryrun, root, skip, skipPublish }) {
   const repos = getSortedRepos(root)
+  console.log('syncing', repos.length, 'projects found in', chalk.yellow(root))
+  console.log('')
+
   repos.forEach(r => {
-    if (!skip.includes(r.dir)) return
+    if (skip.includes(r.dir)) return
 
     const deps = getDepsToUpdate(r, repos)
     if (deps.length) {
