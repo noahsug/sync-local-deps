@@ -31,3 +31,6 @@ sync-local-deps does the following:
   1. `git push`
 
 This process continues until every package has up-to-date local dependencies.
+
+The output will looks something like this:
+![](https://raw.github.com/noahsug/sync-local-deps/master/example.png)
