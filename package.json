@@ -1,7 +1,7 @@
 {
   "name": "sync-local-deps",
   "version": "0.0.0",
-  "description": "Keep local npm projects that depend on each other in sync",
+  "description": "Keep your local npm packages up-to-date with each other",
   "repository": {
     "type": "git",
     "url": "git@github.com:noahsug/sync-local-deps.git"

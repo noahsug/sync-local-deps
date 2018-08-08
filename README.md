@@ -1,5 +1,5 @@
 # sync-local-deps
-> Keep local npm projects that depend on each other in sync
+> Keep your local npm packages up-to-date with each other
 
 ## Install
 ```
