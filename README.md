@@ -13,12 +13,13 @@ npm install
 node <path-to-sync-local-deps> [root] [options]
 
 Options:
-  [root]              directory where projects are located, defaults to cwd()
-  --dryrun, -D        don't make changes
-  --skip, -S          list of directories to skip
-  --skip-publish, -P  list of directories to not npm publish
-  --help              show help
-  --version           show version number
+  [root]               directory where projects are located, defaults to cwd()
+  --dryrun, -D         don't make changes
+  --skip, -S           list of directories to skip
+  --skip-publish, -P   list of directories to not npm publish
+  --skip-git-push, -G  list of directories to not git push
+  --help               show help
+  --version            show version number
 ```
 
 sync-local-deps does the following:

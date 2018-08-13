@@ -5,7 +5,7 @@ const { execSync } = require('child_process')
 const getSortedRepos = require('./getSortedRepos')
 const { getPackageConfig } = require('./utils')
 
-function syncLocalDeps({ dryrun, root, skip, skipPublish }) {
+function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
   const repos = getSortedRepos(root)
   console.log('syncing', repos.length, 'projects found in', chalk.yellow(root))
   console.log('')
@@ -29,7 +29,9 @@ function syncLocalDeps({ dryrun, root, skip, skipPublish }) {
       if (!skipPublish.includes(r.dir)) {
         publishPackage(r, { dryrun, cwd: r.path })
       }
-      doCmd('git push', { dryrun, cwd: r.path })
+      if (!skipGitPush.includes(r.dir)) {
+        doCmd('git push', { dryrun, cwd: r.path })
+      }
       console.log('')
     }
   })
@@ -50,16 +52,26 @@ function hasGitChanges(path) {
   return execSync('git status --porcelain', { cwd: path }).length
 }
 
-function doCmd(cmd, { dryrun, cwd }) {
+function doCmd(cmd, { dryrun, cwd, required }) {
   console.log(chalk.gray(cmd))
   if (dryrun === false) {
-    return execSync(cmd, { cwd }).toString()
+    try {
+      return execSync(cmd, { cwd }).toString()
+    } catch (e) {
+      if (required) throw e
+      console.log(chalk.red('Warning:'), 'command failed:')
+      console.log(e)
+    }
   }
+  return undefined
 }
 
 function updateDeps(deps, options) {
   const depInstallStrs = deps.map(d => d + '@latest')
-  doCmd(`npm install --save ${depInstallStrs.join(' ')}`, options)
+  doCmd(`npm install --save ${depInstallStrs.join(' ')}`, {
+    required: true,
+    ...options,
+  })
   doCmd(`git commit -am 'bump deps'`, options)
 }
 

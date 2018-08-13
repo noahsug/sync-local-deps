@@ -30,6 +30,12 @@ const options = yargs
       type: 'array',
       default: [],
     },
+    skipGitPush: {
+      alias: 'G',
+      describe: 'list of directories to not git push',
+      type: 'array',
+      default: [],
+    },
   }).argv
 
 function getRoot(userRoot) {
