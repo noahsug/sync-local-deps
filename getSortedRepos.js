@@ -36,11 +36,11 @@ function sortReposByUpdateOrder(repos) {
   const sorted = []
   while (sorted.length < repos.length) {
     const next = repos.find(r => {
-      if (sorted.find(visited => visited.name === r.name)) return false
+      if (sorted.find(visited => visited.dir === r.dir)) return false
 
       const deps = Object.keys(r.deps)
-        .filter(dep => sorted.every(visited => visited.name !== dep))
-        .filter(dep => repos.find(repo => repo.name === dep))
+        .filter(dep => sorted.every(visited => visited.dir !== dep))
+        .filter(dep => repos.find(repo => repo.dir === dep))
       return deps.length === 0
     })
     sorted.push(next)
