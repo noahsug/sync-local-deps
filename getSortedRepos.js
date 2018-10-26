@@ -9,7 +9,7 @@ function getSortedRepos(root) {
 }
 
 function getRepos(root) {
-  return fs
+  const repos = fs
     .readdirSync(root)
     .filter(dir => isDirectory(pathLib.join(root, dir)))
     .map(dir => {
@@ -24,6 +24,18 @@ function getRepos(root) {
       }
     })
     .filter(r => r.name)
+
+  // filter out deps we don't care about
+  repos.forEach(repo => {
+    const newDeps = {}
+    Object.keys(repo.deps)
+      .filter(dep => repos.some(r => r.name === dep))
+      .forEach(dep => {
+        newDeps[dep] = repo.deps[dep]
+      })
+    repo.deps = newDeps
+  })
+  return repos
 }
 
 function getDeps(config) {
@@ -32,17 +44,23 @@ function getDeps(config) {
   return Object.assign(deps, devDeps)
 }
 
+function getUnmetDeps(repo, visited) {
+  return Object.keys(repo.deps).filter(dep =>
+    visited.every(visited => visited.name !== dep)
+  )
+}
+
 function sortReposByUpdateOrder(repos) {
+  repos.sort((a, b) => Object.keys(b.deps).length - Object.keys(a.deps).length)
   const sorted = []
   while (sorted.length < repos.length) {
-    const next = repos.find(r => {
-      if (sorted.find(visited => visited.dir === r.dir)) return false
-
-      const deps = Object.keys(r.deps)
-        .filter(dep => sorted.every(visited => visited.dir !== dep))
-        .filter(dep => repos.find(repo => repo.dir === dep))
-      return deps.length === 0
-    })
+    const next = repos
+      .filter(r => sorted.every(visited => visited.dir !== r.dir))
+      .sort(
+        (a, b) =>
+          getUnmetDeps(b, sorted).length - getUnmetDeps(a, sorted).length
+      )
+      .pop()
     sorted.push(next)
   }
   return sorted
