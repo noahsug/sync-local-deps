@@ -3,14 +3,12 @@
 
 ## Install
 ```
-git clone https://github.com/noahsug/sync-local-deps.git
-cd sync-local-deps
-npm install
+npm install -g sync-local-deps
 ```
 
 ## Usage
 ```sh
-node <path-to-sync-local-deps> [root] [options]
+sync-local-deps [root] [options]
 
 Options:
   [root]               directory where projects are located, defaults to cwd()
