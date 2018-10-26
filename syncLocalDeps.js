@@ -17,10 +17,11 @@ function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
     if (deps.length) {
       if (hasGitChanges(r.path)) {
         console.log(
-          'Skipping',
+          'skipping',
           chalk.yellow(r.dir),
           '- found uncomitted changes'
         )
+        console.log()
         return
       }
 
@@ -32,7 +33,7 @@ function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
       if (!skipGitPush.includes(r.dir)) {
         doCmd('git push', { dryrun, cwd: r.path })
       }
-      console.log('')
+      console.log()
     }
   })
 }
