@@ -5,8 +5,16 @@ const { execSync } = require('child_process')
 const getSortedRepos = require('./getSortedRepos')
 const { getPackageConfig } = require('./utils')
 
-function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
-  const repos = getSortedRepos(root)
+function syncLocalDeps({
+  dryrun,
+  root,
+  skip,
+  skipPublish,
+  skipGitPush,
+  ignoreDevDeps,
+  npmVersion,
+}) {
+  const repos = getSortedRepos(root, { ignoreDevDeps })
   console.log('syncing', repos.length, 'projects found in', chalk.yellow(root))
   console.log('')
 
@@ -16,11 +24,7 @@ function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
     const deps = getDepsToUpdate(r, repos)
     if (deps.length) {
       if (hasGitChanges(r.path)) {
-        console.log(
-          'skipping',
-          chalk.yellow(r.dir),
-          '- found uncomitted changes'
-        )
+        console.log('skipping', chalk.yellow(r.dir), '- found uncomitted changes')
         console.log()
         return
       }
@@ -28,7 +32,7 @@ function syncLocalDeps({ dryrun, root, skip, skipPublish, skipGitPush }) {
       console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '))
       updateDeps(deps, { dryrun, cwd: r.path })
       if (!skipPublish.includes(r.dir)) {
-        publishPackage(r, { dryrun, cwd: r.path })
+        publishPackage(r, npmVersion, { dryrun, cwd: r.path })
       }
       if (!skipGitPush.includes(r.dir)) {
         doCmd('git push', { dryrun, cwd: r.path })
@@ -76,10 +80,10 @@ function updateDeps(deps, options) {
   doCmd(`git commit -am 'bump deps'`, options)
 }
 
-function publishPackage(r, options) {
-  doCmd('npm version patch && npm publish', options)
+function publishPackage(r, version, options) {
+  doCmd(`npm version ${version} && npm publish`, options)
   if (options.dryrun) {
-    r.version = semver.inc(r.version, 'patch')
+    r.version = semver.inc(r.version, version)
   } else {
     r.version = getPackageConfig(r.path).version
   }

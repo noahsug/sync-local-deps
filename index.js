@@ -36,6 +36,17 @@ const options = yargs
       type: 'array',
       default: [],
     },
+    ignoreDevDeps: {
+      alias: 'I',
+      describe: 'don\'t update dev deps',
+      type: 'boolean',
+    },
+    npmVersion: {
+      alias: 'v',
+      describe: 'npm version to bump to, see "npm version --help"',
+      type: 'string',
+      default: 'patch',
+    },
   }).argv
 
 function getRoot(userRoot) {

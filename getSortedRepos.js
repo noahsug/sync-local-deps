@@ -3,12 +3,12 @@ const pathLib = require('path')
 
 const { isDirectory, getPackageConfig } = require('./utils')
 
-function getSortedRepos(root) {
-  const repos = getRepos(root)
+function getSortedRepos(root, { ignoreDevDeps }) {
+  const repos = getRepos(root, { ignoreDevDeps })
   return sortReposByUpdateOrder(repos)
 }
 
-function getRepos(root) {
+function getRepos(root, { ignoreDevDeps }) {
   const repos = fs
     .readdirSync(root)
     .filter(dir => isDirectory(pathLib.join(root, dir)))
@@ -20,7 +20,7 @@ function getRepos(root) {
         path,
         name: config.name,
         version: config.version,
-        deps: getDeps(config),
+        deps: getDeps(config, { ignoreDevDeps }),
       }
     })
     .filter(r => r.name)
@@ -38,8 +38,10 @@ function getRepos(root) {
   return repos
 }
 
-function getDeps(config) {
+function getDeps(config, { ignoreDevDeps }) {
   const deps = config.dependencies || {}
+  if (ignoreDevDeps) return deps
+
   const devDeps = config.devDependencies || {}
   return Object.assign(deps, devDeps)
 }
