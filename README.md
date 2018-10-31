@@ -13,9 +13,13 @@ sync-local-deps [root] [options]
 Options:
   [root]               directory where projects are located, defaults to cwd()
   --dryrun, -D         don't make changes
+  --npm-version, -v     npm version to bump to, see "npm version --help"
+                                                     [string] [default: "patch"]
+  --only, -o           only sync the given projects                      [array]
   --skip, -S           list of directories to skip
   --skip-publish, -P   list of directories to not npm publish
   --skip-git-push, -G  list of directories to not git push
+  --ignore-dev-deps, -I  don't update dev deps                         [boolean]
   --help               show help
   --version            show version number
 ```
