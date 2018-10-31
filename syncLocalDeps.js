@@ -11,6 +11,7 @@ function syncLocalDeps({
   skip,
   skipPublish,
   skipGitPush,
+  only,
   ignoreDevDeps,
   npmVersion,
 }) {
@@ -19,7 +20,7 @@ function syncLocalDeps({
   console.log('')
 
   repos.forEach(r => {
-    if (skip.includes(r.dir)) return
+    if (skip.includes(r.dir) || (only && !only.includes(r.dir))) return
 
     const deps = getDepsToUpdate(r, repos)
     if (deps.length) {

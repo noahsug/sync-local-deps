@@ -47,6 +47,11 @@ const options = yargs
       type: 'string',
       default: 'patch',
     },
+    only: {
+      alias: 'o',
+      describe: 'only sync the given projects',
+      type: 'array',
+    },
   }).argv
 
 function getRoot(userRoot) {
