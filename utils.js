@@ -1,28 +1,28 @@
-const fs = require('fs')
-const pathLib = require('path')
+const fs = require('fs');
+const pathLib = require('path');
 
 function isDirectory(file) {
-  let stats
+  let stats;
   try {
-    stats = fs.statSync(file)
+    stats = fs.statSync(file);
   } catch (e) {
-    return false
+    return false;
   }
-  return stats && stats.isDirectory()
+  return stats && stats.isDirectory();
 }
 
 function getPackageConfig(path) {
-  const packagePath = pathLib.join(path, 'package.json')
-  if (!fs.existsSync(packagePath)) return false
+  const packagePath = pathLib.join(path, 'package.json');
+  if (!fs.existsSync(packagePath)) return false;
 
-  let config
+  let config;
   try {
-    const packageJson = fs.readFileSync(packagePath, 'utf-8')
-    config = JSON.parse(packageJson)
+    const packageJson = fs.readFileSync(packagePath, 'utf-8');
+    config = JSON.parse(packageJson);
   } catch (e) {
-    return {}
+    return {};
   }
-  return config
+  return config;
 }
 
-module.exports = { isDirectory, getPackageConfig }
+module.exports = { isDirectory, getPackageConfig };

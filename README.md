@@ -1,12 +1,15 @@
 # sync-local-deps
+
 > Keep your local npm packages up-to-date with each other
 
 ## Install
+
 ```
 npm install -g sync-local-deps
 ```
 
 ## Usage
+
 ```sh
 sync-local-deps [root] [options]
 
@@ -27,13 +30,14 @@ Options:
 ```
 
 sync-local-deps does the following:
+
 1. scans the given `root` directory for projects that depend on other projects in `root`
 1. build a dependency graph between projects so they're updated in the correct order
 1. for each project with out-of-date local dependencies:
-  1. `npm install --save dep1@latest dep2@latest ...`
-  1. `git commit -am 'bump deps'`
-  1. `npm version patch && npm publish`
-  1. `git push`
+   1. `npm install --save dep1@latest dep2@latest ...`
+   1. `git commit -am 'bump deps'`
+   1. `npm version patch && npm publish`
+   1. `git push`
 
 This process continues until every package has up-to-date local dependencies.
 

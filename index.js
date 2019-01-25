@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 
-const path = require('path')
-const yargs = require('yargs')
+const path = require('path');
+const yargs = require('yargs');
 
-const syncLocalDeps = require('./syncLocalDeps')
+const syncLocalDeps = require('./syncLocalDeps');
 
 const options = yargs
-  .command('$0 [root]', 'bump deps', yargs => {
+  .command('$0 [root]', 'bump deps', (yargs) => {
     yargs.positional('root', {
       describe: 'directory where repos are located, defaults to cwd()',
       type: 'string',
-    })
+    });
   })
   .options({
     dryrun: {
@@ -38,7 +38,7 @@ const options = yargs
     },
     ignoreDevDeps: {
       alias: 'I',
-      describe: 'don\'t update dev deps',
+      describe: "don't update dev deps",
       type: 'boolean',
     },
     npmVersion: {
@@ -52,22 +52,21 @@ const options = yargs
       describe: 'only sync the given projects, looks at cwd if empty',
       type: 'array',
     },
-  }).argv
+  }).argv;
 
 function getRoot(userRoot) {
-  const root = userRoot || process.cwd()
-  return path.isAbsolute(root) ? root : path.join(process.cwd(), root)
+  const root = userRoot || process.cwd();
+  return path.isAbsolute(root) ? root : path.join(process.cwd(), root);
 }
 
 const root = getRoot(options.root);
 
 // use basename of cwd() as repo name if --only is passed but empty
 if (options.only && options.only.length === 0) {
-  options.only = [path.basename(process.cwd())]
+  options.only = [path.basename(process.cwd())];
 }
-console.log(options.only)
 
 syncLocalDeps({
   ...options,
   root,
-})
+});

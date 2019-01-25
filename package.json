@@ -2,11 +2,13 @@
   "name": "sync-local-deps",
   "version": "0.0.6",
   "description": "Keep your local npm packages up-to-date with each other",
+  "scripts": {
+    "prettier": "prettier --write **.json **.md **.js"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:noahsug/sync-local-deps.git"
   },
-  "main": "index.js",
   "keywords": [
     "bump",
     "dependencies",
@@ -18,5 +20,7 @@
     "semver": "^5.5.0",
     "yargs": "^11.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^1.16.1"
+  }
 }
