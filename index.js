@@ -49,7 +49,7 @@ const options = yargs
     },
     only: {
       alias: 'o',
-      describe: 'only sync the given projects',
+      describe: 'only sync the given projects, looks at cwd if empty',
       type: 'array',
     },
   }).argv
@@ -59,7 +59,15 @@ function getRoot(userRoot) {
   return path.isAbsolute(root) ? root : path.join(process.cwd(), root)
 }
 
+const root = getRoot(options.root);
+
+// use basename of cwd() as repo name if --only is passed but empty
+if (options.only && options.only.length === 0) {
+  options.only = [path.basename(process.cwd())]
+}
+console.log(options.only)
+
 syncLocalDeps({
   ...options,
-  root: getRoot(options.root),
+  root,
 })
