@@ -26,11 +26,14 @@ function syncLocalDeps({
     if (deps.length) {
       if (hasGitChanges(r.path)) {
         console.log('skipping', chalk.yellow(r.dir), '- found uncomitted changes');
-        console.log();
-        return;
+        if (!dryrun) {
+          console.log();
+          return;
+        }
+      } else {
+        console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '));
       }
 
-      console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '));
       updateDeps(deps, { dryrun, cwd: r.path });
       if (!skipPublish.includes(r.dir)) {
         publishPackage(r, npmVersion, { dryrun, cwd: r.path });

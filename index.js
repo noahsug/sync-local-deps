@@ -36,6 +36,11 @@ const options = yargs
       type: 'array',
       default: [],
     },
+    only: {
+      alias: 'o',
+      describe: 'only sync the given projects, looks at cwd if empty',
+      type: 'array',
+    },
     ignoreDevDeps: {
       alias: 'I',
       describe: "don't update dev deps",
@@ -47,11 +52,6 @@ const options = yargs
       type: 'string',
       default: 'patch',
     },
-    only: {
-      alias: 'o',
-      describe: 'only sync the given projects, looks at cwd if empty',
-      type: 'array',
-    },
   }).argv;
 
 function getRoot(userRoot) {
@@ -61,10 +61,17 @@ function getRoot(userRoot) {
 
 const root = getRoot(options.root);
 
-// use basename of cwd() as repo name if --only is passed but empty
-if (options.only && options.only.length === 0) {
-  options.only = [path.basename(process.cwd())];
+const currentRepo = path.basename(process.cwd());
+function useCurrentRepoIfEmpty(arr) {
+  if (arr && arr.length === 0) {
+    arr[0] = currentRepo;
+  }
 }
+
+// use current repo if an array command is passed as an empty array
+[options.skip, options.skipPublish, options.skipGitPush, options.only].forEach(
+  useCurrentRepoIfEmpty
+);
 
 syncLocalDeps({
   ...options,
