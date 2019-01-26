@@ -22,7 +22,7 @@ function syncLocalDeps({
   repos.forEach((r) => {
     if (skip.includes(r.dir) || (only && !only.includes(r.dir))) return;
 
-    const deps = getDepsToUpdate(r, repos);
+    const { deps, stats } = getDepsToUpdate(r, repos);
     if (deps.length) {
       if (hasGitChanges(r.path)) {
         console.log('skipping', chalk.yellow(r.dir), '- found uncomitted changes');
@@ -31,8 +31,12 @@ function syncLocalDeps({
           return;
         }
       } else {
-        console.log('bumping', chalk.yellow(r.dir), 'deps:', deps.join(', '));
+        console.log('bumping', chalk.yellow(r.dir));
       }
+
+      stats.forEach(({ name, from, to }) => {
+        console.log(chalk.blue(name), from, '->', to);
+      });
 
       updateDeps(deps, { dryrun, cwd: r.path });
       if (!skipPublish.includes(r.dir)) {
@@ -47,14 +51,23 @@ function syncLocalDeps({
 }
 
 function getDepsToUpdate(sourceRepo, repos) {
-  return Object.keys(sourceRepo.deps)
+  const stats = [];
+  const deps = Object.keys(sourceRepo.deps)
     .map((dep) => repos.find((repo) => repo.name === dep))
     .filter((depRepo) => !!depRepo)
     .filter((depRepo) => {
-      const version = semver.coerce(sourceRepo.deps[depRepo.name]).raw;
-      return semver.lt(version, depRepo.version);
+      const satisfied = semver.satisfies(depRepo.version, sourceRepo.deps[depRepo.name]);
+      if (!satisfied) {
+        stats.push({
+          name: depRepo.name,
+          from: sourceRepo.deps[depRepo.name],
+          to: depRepo.version,
+        });
+      }
+      return !satisfied;
     })
     .map((depRepo) => depRepo.name);
+  return { deps, stats };
 }
 
 function hasGitChanges(path) {
