@@ -21,7 +21,7 @@ function syncLocalDeps({
   console.log('');
 
   repos.forEach((r) => {
-    if (skip.includes(r.dir) || (only && !only.includes(r.dir))) return;
+    if (skip.includes(r.dir) || (only && only.length > 0 && !only.includes(r.dir))) return;
 
     const { deps, stats } = getDepsToUpdate(r, repos, { upgradeAll });
     if (deps.length) {
