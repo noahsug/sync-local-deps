@@ -22,19 +22,16 @@ const options = yargs
       alias: 'S',
       describe: 'list of directories to skip',
       type: 'array',
-      default: [],
     },
     skipPublish: {
       alias: 'P',
       describe: 'list of directories to not npm publish',
       type: 'array',
-      default: [],
     },
     skipGitPush: {
       alias: 'G',
       describe: 'list of directories to not git push',
       type: 'array',
-      default: [],
     },
     only: {
       alias: 'o',
@@ -43,7 +40,13 @@ const options = yargs
     },
     ignoreDevDeps: {
       alias: 'I',
-      describe: "don't update dev deps",
+      describe: `don't update dev deps`,
+      type: 'boolean',
+    },
+    upgradeAll: {
+      alias: 'a',
+      describe:
+        'include even those dependencies whose latest version satisfies the declared semver dependency',
       type: 'boolean',
     },
     npmVersion: {
@@ -61,17 +64,16 @@ function getRoot(userRoot) {
 
 const root = getRoot(options.root);
 
+// use current repo if an array command is passed as an empty array
 const currentRepo = path.basename(process.cwd());
-function useCurrentRepoIfEmpty(arr) {
+['skip', 'skipPublish', 'skipGitPush', 'only'].forEach((arrayOption) => {
+  const arr = options[arrayOption];
   if (arr && arr.length === 0) {
     arr[0] = currentRepo;
+  } else if (!arr) {
+    options[arrayOption] = [];
   }
-}
-
-// use current repo if an array command is passed as an empty array
-[options.skip, options.skipPublish, options.skipGitPush, options.only].forEach(
-  useCurrentRepoIfEmpty
-);
+});
 
 syncLocalDeps({
   ...options,
