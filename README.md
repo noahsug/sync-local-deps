@@ -21,7 +21,7 @@ Options:
                                                            [array] [default: []]
   --skipGitPush, -G    list of directories to not git push [array] [default: []]
   --ignoreDevDeps, -I  don't update dev deps                           [boolean]
-  --upgradeAll, -a     include even those dependencies whose latest version
+  --updateAll, -a     include even those dependencies whose latest version
                        satisfies the declared semver dependency        [boolean]
   --npmVersion, -v     npm version to bump to, see "npm version --help"
                                                      [string] [default: "patch"]

@@ -16,6 +16,7 @@ const options = yargs
     dryrun: {
       alias: 'D',
       describe: `don't make changes`,
+      type: 'boolean',
       default: false,
     },
     skip: {
@@ -43,7 +44,7 @@ const options = yargs
       describe: `don't update dev deps`,
       type: 'boolean',
     },
-    upgradeAll: {
+    updateAll: {
       alias: 'a',
       describe:
         'include even those dependencies whose latest version satisfies the declared semver dependency',

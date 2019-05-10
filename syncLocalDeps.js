@@ -14,7 +14,7 @@ function syncLocalDeps({
   only,
   ignoreDevDeps,
   npmVersion,
-  upgradeAll,
+  updateAll,
 }) {
   const repos = getSortedRepos(root, { ignoreDevDeps });
   console.log('syncing', repos.length, 'projects found in', chalk.yellow(root));
@@ -23,7 +23,7 @@ function syncLocalDeps({
   repos.forEach((r) => {
     if (skip.includes(r.dir) || (only && only.length > 0 && !only.includes(r.dir))) return;
 
-    const { deps, stats } = getDepsToUpdate(r, repos, { upgradeAll });
+    const { deps, stats } = getDepsToUpdate(r, repos, { updateAll });
     if (deps.length) {
       if (hasGitChanges(r.path)) {
         console.log('skipping', chalk.yellow(r.dir), '- found uncomitted changes');
@@ -51,14 +51,14 @@ function syncLocalDeps({
   });
 }
 
-function getDepsToUpdate(sourceRepo, repos, { upgradeAll }) {
+function getDepsToUpdate(sourceRepo, repos, { updateAll }) {
   const stats = [];
   const deps = Object.keys(sourceRepo.deps)
     .map((dep) => repos.find((repo) => repo.name === dep))
     .filter((depRepo) => !!depRepo)
     .filter((depRepo) => {
       const satisfied = satisfiesSemVer(depRepo.version, sourceRepo.deps[depRepo.name], {
-        upgradeAll,
+        updateAll,
       });
       if (!satisfied) {
         stats.push({
@@ -73,9 +73,9 @@ function getDepsToUpdate(sourceRepo, repos, { upgradeAll }) {
   return { deps, stats };
 }
 
-function satisfiesSemVer(version, range, { upgradeAll }) {
-  return upgradeAll
-    ? semver.lt(version, semver.coerce(range).raw)
+function satisfiesSemVer(version, range, { updateAll }) {
+  return updateAll
+    ? !semver.gt(version, semver.coerce(range).raw)
     : semver.satisfies(version, range);
 }
 
