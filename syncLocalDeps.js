@@ -73,10 +73,11 @@ function getDepsToUpdate(sourceRepo, repos, { updateAll }) {
   return { deps, stats };
 }
 
-function satisfiesSemVer(version, range, { updateAll }) {
-  return updateAll
-    ? !semver.gt(version, semver.coerce(range).raw)
-    : semver.satisfies(version, range);
+function satisfiesSemVer(version, criteria, { updateAll }) {
+  const coercedCriteria = semver.coerce(criteria).raw
+  // don't downgrade packages when the user doesn't have the latest version installed locally
+  if (!semver.lt(coercedCriteria, version)) return true;
+  return updateAll ? version === coercedCriteria : semver.satisfies(version, criteria)
 }
 
 function hasGitChanges(path) {
