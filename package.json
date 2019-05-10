@@ -1,6 +1,6 @@
 {
   "name": "sync-local-deps",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Keep your local npm packages up-to-date with each other",
   "scripts": {
     "prettier": "prettier --write **.json **.md **.js"
